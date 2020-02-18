@@ -6,7 +6,7 @@
  */
 export function formatDate (dateStr, fmt) {
   let date = new Date(dateStr)
-  if (!date.getFullYear()) {
+  if (dateStr !== '' && !date.getFullYear()) {
     console.error('时间格式错误！')
     return ''
   }

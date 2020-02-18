@@ -4,6 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>vue-cnode</title>
+    <script src="./static/config/index.js"></script>
+    <% if (process.env.NODE_ENV === 'production') { %>
+      <!-- 生产环境 -->
+      <link rel="shortcut icon" type="image/x-icon" href="./cnode_icon.png">
+    <% }else { %>
+      <!-- 开发环境 -->
+      <link rel="shortcut icon" type="image/x-icon" href="./src/assets/images/cnode_icon.png">
+    <% } %>
   </head>
   <body>
     <div id="app"></div>
