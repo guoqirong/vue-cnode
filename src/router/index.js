@@ -5,15 +5,28 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'HelloWorld',
-    //   component: () => import('@/components/HelloWorld.vue')
-    // }
     {
       path: '/',
       name: 'index',
-      component: () => import('@/view/index/index.vue')
+      redirect: '/index',
+      component: () => import('@/view/index/index.vue'),
+      children: [
+        {
+          path: '/index',
+          name: 'index-topic',
+          component: () => import('@/view/topic/index-topic.vue')
+        },
+        {
+          path: '/index-detail',
+          name: 'index-detail',
+          component: () => import('@/view/detail/index-detail.vue')
+        },
+        {
+          path: '/login',
+          name: 'login',
+          component: () => import('@/view/login/index.vue')
+        }
+      ]
     }
   ],
   beforeRouteEnter (to, from, next) {

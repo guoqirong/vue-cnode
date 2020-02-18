@@ -8,10 +8,12 @@ import store from './store'
 Vue.config.productionTip = false
 
 // 挂载全局
-import request from '@/utils/request'
+import httpRequest from '@/utils/request'
 import { formatDate } from '@/utils'
-Vue.prototype.$request = request // ajax请求方法
+import Bus from '@/utils/bus';
+Vue.prototype.$httpRequest = httpRequest // ajax请求方法
 Vue.prototype.$formatDate = formatDate // 日期格式化
+Vue.prototype.$bus = Bus // 全局事件管理
 
 // 引入element-UI
 import 'element-ui/lib/theme-chalk/index.css'
