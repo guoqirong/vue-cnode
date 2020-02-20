@@ -1,17 +1,22 @@
 <template>
-  <div class="content-body">
+  <div class="my-message">
     <div class="lift-content">
-      <el-card class="box-card">
+      <el-card class="box-card" v-loading="loadData">
+        <div slot="header" class="card-title">
+          <span>我的收藏</span>
+        </div>
         <div>
-          <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane v-for="(item, i) in tabList" :key="i" :label="item.name" :name="item.key"></el-tab-pane>
-            <topic-list ref="topicList"></topic-list>
-          </el-tabs>
+          <span v-if="collect.length > 0">
+            <div v-for="(item, i) in collect" :key="i">
+              <list-item :itemData="item" @seeDetail="seeDetail"></list-item>
+            </div>
+          </span>
+          <div v-else class="is-notdata">暂无数据</div>
         </div>
       </el-card>
     </div>
     <div class="right-content">
-      <el-card class="box-card" v-if="!userData" v-loading="loadData">
+      <el-card class="box-card" v-if="!userData">
         <span class="not-login">
           <div class="title">
             CNode：Node.js专业中文社区 
@@ -22,7 +27,7 @@
           </div>
         </span>
       </el-card>
-      <el-card class="box-card" v-if="userData" v-loading="loadData">
+      <el-card class="box-card" v-if="userData">
         <div slot="header" class="card-title">
           <span>个人信息</span>
         </div>
@@ -31,29 +36,6 @@
             <el-avatar shape="square" :size="40" :src="userData.avatar_url || ''" :key="userData.avatar_url || ''" :alt="userData.loginname || ''"></el-avatar>
           </div>
           <div class="user-name">{{userData.loginname || ''}}</div>
-          <div class="user-score">积分：{{userData.score || ''}}</div>
-        </div>
-      </el-card>
-      <el-card class="box-card list-card" v-if="userData" v-loading="loadData">
-        <div slot="header" class="card-title">
-          <span>我的主题</span>
-        </div>
-        <div v-for="(item, i) in userData.recent_topics" :key="i" class="recent_topics">
-          <div :title="item.title">{{item.title}}</div>
-        </div>
-        <div v-if="userData.recent_topics && userData.recent_topics.length < 1" :key="i" class="recent_topics">
-          <div>暂无数据</div>
-        </div>
-      </el-card>
-      <el-card class="box-card list-card" v-if="userData" v-loading="loadData">
-        <div slot="header" class="card-title">
-          <span>我的回复</span>
-        </div>
-        <div v-for="(item, i) in userData.recent_replies" :key="i" class="recent_topics">
-          <div :title="item.title">{{item.title}}</div>
-        </div>
-        <div v-if="userData.recent_replies && userData.recent_replies.length < 1" :key="i" class="recent_topics">
-          <div>暂无数据</div>
         </div>
       </el-card>
       <el-card class="box-card">
@@ -70,59 +52,50 @@
 </template>
 
 <script>
-  import topicList from '../topic/topic-list'
+  import listItem from '../../components/listItem'
   export default {
     data() {
       return {
-        activeName: 'all',
-        tabList: [
-          { key: 'all', name: '全部' },
-          { key: 'good', name: '精华' },
-          { key: 'share', name: '分享' },
-          { key: 'ask',  name: '问答' },
-          { key: 'job', name: '招聘' },
-          { key: 'dev', name: '客户端测试' }
-        ],
         loadData: false,
         token: '',
-        userData: ''
+        userData: '',
+        collect: []
       };
     },
     components: {
-      topicList
+      listItem
     },
     mounted () {
-      this.$bus.$on('selectTabKey', (bkey) => {
-        if (bkey) {
-          this.$store.commit('topic/updateTab', bkey)
-        }
-      })
       this.$nextTick(() => {
-        this.activeName = this.$store.state.topic.tab || this.activeName
-        this.$refs.topicList.getData(this.activeName)
+        this.token = localStorage.getItem('token') || ''
+        this.userData = JSON.parse(localStorage.getItem('userData'))
         this.getData()
       })
     },
     methods: {
-      getData () {
-        this.token = localStorage.getItem('token') || ''
-        let userName = JSON.parse(localStorage.getItem('userData')).loginname
-        if (this.token && userName) {
+      getData() {
+        if (this.userData && this.userData.loginname) {
           this.loadData = true
           this.$httpRequest ({
-            url: this.$httpRequest.adornUrl(`/api/v1/user/${userName}`),
+            url: this.$httpRequest.adornUrl(`/api/v1/topic_collect/${this.userData.loginname}`),
             method: 'get'
           }).then(({data}) => {
             this.loadData = false
-            this.userData = data.data
+            this.collect = data.data
           }).catch(e => {
             this.$message.error('请求失败')
             console.error(e)
           })
         }
       },
-      handleClick(tab) {
-        this.$refs.topicList.getData(this.activeName)
+      seeDetail (id) {
+        this.$router.push({
+          path: `/index-detail`,
+          query: {
+            id: id,
+            key: this.tab
+          }
+        })
       },
       gotoLogin () {
         this.$router.push({
@@ -134,7 +107,7 @@
 </script>
 
 <style lang="scss">
-  .content-body {
+  .my-message {
     width: 90%;
     margin: 10px auto;
     @media only screen and (max-width: 950px) {
@@ -152,11 +125,20 @@
       width: calc(100% - 300px);
       .box-card {
         margin-bottom: 10px;
+        .el-card__header {
+          padding: 8px 20px;
+          padding-bottom: 0;
+          .card-title {
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+          }
+        }
         .el-card__body {
-          padding-top: 0px;
-          .el-tabs__header {
-            margin: 8px;
-            margin-bottom: 0;
+          padding: 0;
+          .is-notdata {
+            font-size: 12px;
+            margin: 20px;
           }
         }
       }
@@ -201,10 +183,6 @@
             font-size: 18px;
             float: left;
           }
-          .user-score {
-            clear: both;
-            font-size: 14px;
-          }
         }
         .client-box {
           width: 100%;
@@ -212,22 +190,6 @@
             display: inline-block;
             width: 100%;
             text-align: center;
-          }
-        }
-      }
-      .list-card {
-        .el-card__body {
-          padding: 0;
-          .recent_topics {
-            div {
-              padding: 10px 20px;
-              font-size: 12px;
-              border-bottom: 1px solid #f0f0f0;
-              width: calc(100% - 40px);
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
           }
         }
       }

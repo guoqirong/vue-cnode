@@ -11,11 +11,11 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/proxyApi': {
+      '/proxyApi/': {
         target: 'https://cnodejs.org',
         changeOrigin: true,
         pathRewrite: {
-          '^/proxyApi': '/'
+          '^/proxyApi/': '/'
         }
       }
     },
