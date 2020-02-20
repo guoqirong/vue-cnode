@@ -94,6 +94,7 @@
         this.token = ''
         localStorage.removeItem('userData')
         localStorage.removeItem('token')
+        this.gotoIndex()
         location.reload()
       }
     }

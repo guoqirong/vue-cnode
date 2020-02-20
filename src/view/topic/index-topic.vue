@@ -106,7 +106,7 @@
     methods: {
       getData () {
         this.token = localStorage.getItem('token') || ''
-        let userName = JSON.parse(localStorage.getItem('userData')).loginname
+        let userName = JSON.parse(localStorage.getItem('userData')) ? JSON.parse(localStorage.getItem('userData')).loginname : ''
         if (this.token && userName) {
           this.loadData = true
           this.$httpRequest ({
