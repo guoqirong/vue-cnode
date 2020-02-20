@@ -17,7 +17,7 @@
               <div class="topic-title-desc">{{'● ' +$formatDate((topic.create_at || ''), 'yyyy-MM-dd') + ' ● ' + (topic.author && topic.author.loginname ? topic.author.loginname : '')}}</div>
             </div>
             <div class="title-right">
-              <el-button type="warning" :icon="topic.is_collect ? 'el-icon-star-on' : 'el-icon-star-off'" circle plain size="small"></el-button>
+              <el-button @click="collectClick" type="warning" :icon="topic.is_collect ? 'el-icon-star-on' : 'el-icon-star-off'" circle plain size="small"></el-button>
             </div>
           </div>
           <div class="topic-content" v-html="topic.content"></div>
@@ -44,7 +44,7 @@
         </div>
         <div class="author">
           <div class="author-img">
-            <el-avatar shape="square" :size="40" :src="topic.author && topic.author.avatar_url ? topic.author.avatar_url : ''"></el-avatar>
+            <el-avatar shape="square" :size="40" :src="topic.author && topic.author.avatar_url ? topic.author.avatar_url : ''" :key="topic.author && topic.author.avatar_url ? topic.author.avatar_url : ''" :alt="topic.author && topic.author.loginname ? topic.author.loginname : ''"></el-avatar>
           </div>
           <div class="author-name">{{topic.author && topic.author.loginname ? topic.author.loginname : ''}}</div>
         </div>
@@ -95,6 +95,9 @@
         }).then(({data}) => {
           this.loadData = false
           data.data.content = this.imgContent(data.data.content)
+          data.data.replies.forEach(item => {
+            item.content = this.imgContent(item.content)
+          });
           this.topic = data.data
         }).catch(e => {
           this.$message.error('请求失败')
@@ -120,7 +123,61 @@
             str = str.replace(arr[i], img)
           }
         }
+        // 匹配p标签（g表示匹配所有结果i表示区分大小写）
+        let pReg = /<p.*?(?:>)/gi
+        let arrp = str.match(pReg)
+        if (arrp && arrp.length > 0) {
+          for (let i = 0; i < arrp.length; i++) {
+            let pArr = arrp[i].split('')
+            let p = ''
+            for (let key in pArr) {
+              if (key == 1) {
+                p = p + pArr[key] + ' style="word-wrap: break-word;word-break: break-all;"'
+              } else {
+                p = p + pArr[key]
+              }
+            }
+            str = str.replace(arrp[i], p)
+          }
+        }
         return str
+      },
+      collectClick () {
+        if (this.topic.is_collect) {
+          this.topicDeCollect()
+        } else {
+          this.topicCollect()
+        }
+      },
+      topicCollect () {
+        this.$httpRequest ({
+          url: this.$httpRequest.adornUrl(`/api/v1/topic_collect/collect`),
+          method: 'post',
+          data: {
+            topic_id: this.topic.id,
+            accesstoken: localStorage.getItem('token') || ''
+          }
+        }).then(({data}) => {
+          this.topic.is_collect = true
+        }).catch(e => {
+          this.$message.error('请求失败')
+          console.error(e)
+        })
+      },
+      topicDeCollect () {
+        this.$httpRequest ({
+          url: this.$httpRequest.adornUrl(`/api/v1/topic_collect/de_collect`),
+          method: 'post',
+          data: {
+            topic_id: this.topic.id,
+            accesstoken: localStorage.getItem('token') || ''
+          }
+        }).then(({data}) => {
+          this.topic.is_collect = false
+        }).catch(e => {
+          this.$message.error('请求失败')
+          console.error(e)
+        })
       }
     }
   }

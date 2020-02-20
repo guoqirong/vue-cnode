@@ -1,7 +1,7 @@
 <template>
   <div class="item-body" @click="seeDetail(itemData.id)">
     <div class="user-img">
-      <el-avatar shape="square" :size="30" :src="itemData.author.avatar_url"></el-avatar>
+      <el-avatar shape="square" :size="30" :src="itemData.author.avatar_url" :key="itemData.author.avatar_url" :alt="itemData.author.loginname"></el-avatar>
     </div>
     <div class="reply-count">
       <span class="count-of-replies" title="回复数">{{itemData.reply_count}}</span>

@@ -7,8 +7,13 @@
         </span>
         <span class="navbar-link navbar-noright-link">
           <span><el-link :underline="false" @click="gotoIndex">首页</el-link></span>
-          <span><el-link :underline="false" @click="gotoIndex">消息</el-link></span>
-          <span><el-link :underline="false" @click="gotoIndex">收藏</el-link></span>
+          <span v-if="token !== ''">
+            <el-badge v-if="count > 0" :value="count" class="badge-item">
+              <el-link :underline="false" @click="gotoMessage">消息</el-link>
+            </el-badge>
+            <el-link v-else :underline="false" @click="gotoMessage">消息</el-link>
+          </span>
+          <span v-if="token !== ''"><el-link :underline="false" @click="gotoCollect">收藏</el-link></span>
           <span><el-link :underline="false" href="https://github.com/guoqirong/vue-cnode" target="_blank">GitHub仓库</el-link></span>
           <span v-if="token === ''"><el-link :underline="false" @click="gotoLogin">登录</el-link></span>
           <span v-if="token !== ''"><el-link :underline="false" @click="logout">退出</el-link></span>
@@ -30,11 +35,11 @@
 
 <script>
   export default {
-    // data() {
-    //   return {
-    //     token: ''
-    //   }
-    // },
+    data() {
+      return {
+        count: 0
+      }
+    },
     computed: {
       token: {
         get () { return this.$store.state.user.token }
@@ -42,6 +47,19 @@
     },
     mounted() {
       this.$store.commit('user/updateToken', localStorage.getItem('token') || '')
+      if (localStorage.getItem('token')) {
+          this.$httpRequest ({
+            url: this.$httpRequest.adornUrl(`/api/v1/message/count`),
+            method: 'get',
+            params: {
+              accesstoken: localStorage.getItem('token') || ''
+            }
+          }).then(({data}) => {
+            this.count = data.data
+          }).catch(e => {
+            console.error(e)
+          })
+        }
     },
     methods: {
       gotoIndex () {
@@ -51,10 +69,26 @@
           })
         }
       },
+      gotoMessage () {
+        if (this.$route.path !== '/message') {
+          this.$router.push({
+            path: '/message'
+          })
+        }
+      },
+      gotoCollect () {
+        if (this.$route.path !== '/collect') {
+          this.$router.push({
+            path: '/collect'
+          })
+        }
+      },
       gotoLogin () {
-        this.$router.push({
-          path: '/login'
-        })
+        if (this.$route.path !== '/login') {
+          this.$router.push({
+            path: '/login'
+          })
+        }
       },
       logout () {
         this.token = ''
@@ -66,7 +100,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .body-box {
     .navbar {
       margin-bottom: 0;
@@ -110,6 +144,12 @@
               color: #cccccc;
             }.el-link:hover {
               color: white;
+            }
+          }
+          .badge-item {
+            .el-badge__content {
+              margin-top: 10px;
+              border: 0px;
             }
           }
         }

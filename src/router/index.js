@@ -25,6 +25,16 @@ export default new Router({
           path: '/login',
           name: 'login',
           component: () => import('@/view/login/index.vue')
+        },
+        {
+          path: '/message',
+          name: 'message',
+          component: () => import('@/view/message/index.vue')
+        },
+        {
+          path: '/collect',
+          name: 'collect',
+          component: () => import('@/view/collect/index.vue')
         }
       ]
     }
