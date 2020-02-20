@@ -40,6 +40,11 @@
         }
       }
     },
+    mounted () {
+      if (localStorage.getItem('token')) {
+        this.$router.go(-1)
+      }
+    },
     methods: {
       onSubmit () {
         this.loadData = true
@@ -56,7 +61,7 @@
               localStorage.setItem('userData', JSON.stringify(data))
               localStorage.setItem('token', this.form.token)
               this.$store.commit('user/updateToken', this.form.token)
-              this.$router.go(-1)
+              location.reload()
             }).catch(e => {
               this.loadData = false
               this.$message.error('登录失败')

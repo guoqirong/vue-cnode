@@ -1,6 +1,18 @@
 # vue-cnode
 
-> A Vue.js project
+> cnode vue pc浏览器版
+
+# 效果图
+
+![首页1](https://github.com/guoqirong/vue-cnode/blob/master/demo-screenshot/index1.png)
+
+![首页2](https://github.com/guoqirong/vue-cnode/blob/master/demo-screenshot/index1.png)
+
+![详情](https://github.com/guoqirong/vue-cnode/blob/master/demo-screenshot/detail.png)
+
+![消息](https://github.com/guoqirong/vue-cnode/blob/master/demo-screenshot/message.png)
+
+![收藏](https://github.com/guoqirong/vue-cnode/blob/master/demo-screenshot/collect.png)
 
 ## Build Setup
 
