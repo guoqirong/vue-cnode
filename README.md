@@ -6,7 +6,7 @@
 
 ![首页1](https://github.com/guoqirong/vue-cnode/blob/master/demo-screenshot/index1.png)
 
-![首页2](https://github.com/guoqirong/vue-cnode/blob/master/demo-screenshot/index1.png)
+![首页2](https://github.com/guoqirong/vue-cnode/blob/master/demo-screenshot/index2.png)
 
 ![详情](https://github.com/guoqirong/vue-cnode/blob/master/demo-screenshot/detail.png)
 
