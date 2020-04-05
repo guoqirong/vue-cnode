@@ -2,13 +2,11 @@ import axios from 'axios'
 
 const httpRequest = axios.create({
   timeout: 1000 * 60,
-  withCredentials: true,
+  withCredentials: false,
   headers: {
     'Content-Type': 'application/json; charset=utf-8'
   }
 })
-
-httpRequest.defaults.withCredentials = false
 
 /**
  * 请求地址处理
