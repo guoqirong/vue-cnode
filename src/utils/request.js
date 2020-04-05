@@ -8,6 +8,8 @@ const httpRequest = axios.create({
   }
 })
 
+httpRequest.defaults.withCredentials = false
+
 /**
  * 请求地址处理
  * @param {*} actionName action方法名称
