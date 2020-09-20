@@ -103,6 +103,9 @@
         this.getData()
       })
     },
+    beforeDestroy () {
+      this.$bus.$off('selectTabKey')
+    },
     methods: {
       getData () {
         this.token = localStorage.getItem('token') || ''
