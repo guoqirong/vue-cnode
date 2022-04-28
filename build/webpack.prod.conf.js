@@ -156,16 +156,23 @@ if (config.build.productionGzip) {
 
   webpackConfig.plugins.push(
     new CompressionWebpackPlugin({
-      asset: '[path].gz[query]',
-      algorithm: 'gzip',
-      test: new RegExp(
-        '\\.(' +
-        config.build.productionGzipExtensions.join('|') +
-        ')$'
-      ),
-      threshold: 10240,
-      minRatio: 0.8
+      // filename: 文件名称，这里我们不设置，让它保持和未压缩的文件同一个名称
+      algorithm: 'gzip', // 指定生成gzip格式
+      test: new RegExp('\\.(' + config.build.productionGzipExtensions.join('|') + ')$'), // 匹配哪些格式文件需要压缩
+      threshold: 10240, //对超过10k的数据进行压缩
+      minRatio: 0.6 // 压缩比例，值为0 ~ 1
     })
+    // new CompressionWebpackPlugin({
+    //   asset: '[path].gz[query]',
+    //   algorithm: 'gzip',
+    //   test: new RegExp(
+    //     '\\.(' +
+    //     config.build.productionGzipExtensions.join('|') +
+    //     ')$'
+    //   ),
+    //   threshold: 10240,
+    //   minRatio: 0.8
+    // })
   )
 }
 
