@@ -1,6 +1,7 @@
 # vue-cnode
 
 > cnode vue pc浏览器版
+> [在线演示地址](https://guoqirong.github.io/vue2-cnode)
 
 ## 效果图
 
