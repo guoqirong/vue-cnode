@@ -1,4 +1,4 @@
-import { prefix  } from "../router"
+import { prefix } from "../router"
 
 /**
  * 日期格式化 gqr
@@ -40,7 +40,7 @@ function padLeftZero (str) {
  * @param params 路由参数
  */
 export const routerPush = (route, router, params) => {
-  if (route.path === params || route.path === params.path) return;
+  if (route.path === prefix + params || route.path === prefix + params.path) return;
   // 解构路由路径
   const { path } = typeof params === 'string'
     ? { path: undefined, }
