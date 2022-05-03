@@ -34,6 +34,7 @@
 </template>
 
 <script>
+  import { routerPush } from '@/utils'
   export default {
     data() {
       return {
@@ -48,51 +49,61 @@
     mounted() {
       this.$store.commit('user/updateToken', localStorage.getItem('token') || '')
       if (localStorage.getItem('token')) {
+        this.$httpRequest ({
+          url: this.$httpRequest.adornUrl(`/api/v1/message/count`),
+          method: 'get',
+          params: {
+            accesstoken: localStorage.getItem('token') || ''
+          }
+        }).then(({data}) => {
+          this.count = data.data
+        }).catch(e => {
+          console.error(e)
+        })
+        this.getData();
+      }
+    },
+    methods: {
+      getData () {
+        let userName = localStorage.getItem('loginname') || ''
+        if (userName) {
+            this.$store.commit('user/updateLoadData', true)
           this.$httpRequest ({
-            url: this.$httpRequest.adornUrl(`/api/v1/message/count`),
-            method: 'get',
-            params: {
-              accesstoken: localStorage.getItem('token') || ''
-            }
+            url: this.$httpRequest.adornUrl(`/api/v1/user/${userName}`),
+            method: 'get'
           }).then(({data}) => {
-            this.count = data.data
+            this.loadData = false
+            this.$store.commit('user/updateUserData', data.data)
+            this.$store.commit('user/updateLoadData', false)
           }).catch(e => {
+            this.$message.error('请求失败')
             console.error(e)
           })
         }
-    },
-    methods: {
+      },
       gotoIndex () {
-        if (this.$route.path !== '/index') {
-          this.$router.push({
-            path: '/'
-          })
-        }
+        routerPush(this.$route, this.$router, {
+          path: '/'
+        })
       },
       gotoMessage () {
-        if (this.$route.path !== '/message') {
-          this.$router.push({
-            path: '/message'
-          })
-        }
+        routerPush(this.$route, this.$router, {
+          path: '/message'
+        })
       },
       gotoCollect () {
-        if (this.$route.path !== '/collect') {
-          this.$router.push({
-            path: '/collect'
-          })
-        }
+        routerPush(this.$route, this.$router, {
+          path: '/collect'
+        })
       },
       gotoLogin () {
-        if (this.$route.path !== '/login') {
-          this.$router.push({
-            path: '/login'
-          })
-        }
+        routerPush(this.$route, this.$router, {
+          path: '/login'
+        })
       },
       logout () {
         this.token = ''
-        localStorage.removeItem('userData')
+        localStorage.removeItem('loginname')
         localStorage.removeItem('token')
         this.gotoIndex()
         location.reload()

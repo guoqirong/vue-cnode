@@ -58,7 +58,7 @@
               }
             }).then(({data}) => {
               this.loadData = false
-              localStorage.setItem('userData', JSON.stringify(data))
+              localStorage.setItem('loginname', data.loginname)
               localStorage.setItem('token', this.form.token)
               this.$store.commit('user/updateToken', this.form.token)
               location.reload()

@@ -71,6 +71,7 @@
 
 <script>
   import topicList from '../topic/topic-list'
+  import { routerPush } from '@/utils'
   export default {
     data() {
       return {
@@ -83,13 +84,19 @@
           { key: 'job', name: '招聘' },
           { key: 'dev', name: '客户端测试' }
         ],
-        loadData: false,
-        token: '',
-        userData: ''
+        token: ''
       };
     },
     components: {
       topicList
+    },
+    computed: {
+      loadData() {
+        return this.$store.state.user.loadData;
+      },
+      userData() {
+        return this.$store.state.user.userData;
+      }
     },
     mounted () {
       this.$bus.$on('selectTabKey', (bkey) => {
@@ -100,35 +107,18 @@
       this.$nextTick(() => {
         this.activeName = this.$store.state.topic.tab || this.activeName
         this.$refs.topicList.getData(this.activeName)
-        this.getData()
+        // this.getData()
       })
     },
     beforeDestroy () {
       this.$bus.$off('selectTabKey')
     },
     methods: {
-      getData () {
-        this.token = localStorage.getItem('token') || ''
-        let userName = JSON.parse(localStorage.getItem('userData')) ? JSON.parse(localStorage.getItem('userData')).loginname : ''
-        if (this.token && userName) {
-          this.loadData = true
-          this.$httpRequest ({
-            url: this.$httpRequest.adornUrl(`/api/v1/user/${userName}`),
-            method: 'get'
-          }).then(({data}) => {
-            this.loadData = false
-            this.userData = data.data
-          }).catch(e => {
-            this.$message.error('请求失败')
-            console.error(e)
-          })
-        }
-      },
       handleClick(tab) {
         this.$refs.topicList.getData(this.activeName)
       },
       gotoLogin () {
-        this.$router.push({
+        routerPush(this.$route, this.$router, {
           path: '/login'
         })
       }

@@ -140,7 +140,10 @@
             str = str.replace(arrp[i], p)
           }
         }
-        return str
+        str = str.replace(/“|”/g, '"')
+        str = str.replace(/href="+(\/.?user.?\/|user.?\/)/g, 'href="./#/user/')
+        str = str.replace(/&lt;/g, '<')
+        return str.replace(/&gt;/g, '>')
       },
       collectClick () {
         if (this.topic.is_collect) {

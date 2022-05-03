@@ -83,19 +83,23 @@
 </template>
 
 <script>
+  import { routerPush } from '@/utils'
   export default {
     data() {
       return {
         loadData: false,
         token: '',
-        userData: '',
         message: {}
       };
+    },
+    computed: {
+      userData() {
+        return this.$store.state.user.userData;
+      }
     },
     mounted () {
       this.$nextTick(() => {
         this.token = localStorage.getItem('token') || ''
-        this.userData = JSON.parse(localStorage.getItem('userData'))
         this.getData()
       })
     },
@@ -161,7 +165,10 @@
             str = str.replace(arrp[i], p)
           }
         }
-        return str
+        str = str.replace(/“|”/g, '"')
+        str = str.replace(/href="+(\/.?user.?\/|user.?\/)/g, 'href="./#/user/')
+        str = str.replace(/&lt;/g, '<')
+        return str.replace(/&gt;/g, '>')
       },
       readAll () {
         this.$httpRequest ({
@@ -192,7 +199,7 @@
         })
       },
       gotoLogin () {
-        this.$router.push({
+        routerPush(this.$route, this.$router, {
           path: '/login'
         })
       }

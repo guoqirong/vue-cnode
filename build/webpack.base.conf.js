@@ -3,12 +3,11 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
+const { name } = require('../package');
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
-
-
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
@@ -20,7 +19,10 @@ module.exports = {
     filename: '[name].js',
     publicPath: process.env.NODE_ENV === 'production'
       ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+      : config.dev.assetsPublicPath,
+    library: `${name}-[name]`,
+    libraryTarget: 'umd',		// 把子应用打包成 umd 库格式
+    jsonpFunction: `webpackJsonp_${name}`,
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],

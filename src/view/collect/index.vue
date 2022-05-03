@@ -53,31 +53,35 @@
 
 <script>
   import listItem from '../../components/listItem'
+  import { routerPush } from '@/utils'
   export default {
     data() {
       return {
         loadData: false,
-        token: '',
-        userData: '',
+        loginname: '',
         collect: []
       };
     },
     components: {
       listItem
     },
+    computed: {
+      userData() {
+        return this.$store.state.user.userData;
+      }
+    },
     mounted () {
       this.$nextTick(() => {
-        this.token = localStorage.getItem('token') || ''
-        this.userData = JSON.parse(localStorage.getItem('userData'))
+        this.loginname = localStorage.getItem('loginname')
         this.getData()
       })
     },
     methods: {
       getData() {
-        if (this.userData && this.userData.loginname) {
+        if (this.loginname) {
           this.loadData = true
           this.$httpRequest ({
-            url: this.$httpRequest.adornUrl(`/api/v1/topic_collect/${this.userData.loginname}`),
+            url: this.$httpRequest.adornUrl(`/api/v1/topic_collect/${this.loginname}`),
             method: 'get'
           }).then(({data}) => {
             this.loadData = false
@@ -89,7 +93,7 @@
         }
       },
       seeDetail (id) {
-        this.$router.push({
+        routerPush(this.$route, this.$router, {
           path: `/index-detail`,
           query: {
             id: id,
@@ -98,7 +102,7 @@
         })
       },
       gotoLogin () {
-        this.$router.push({
+        routerPush(this.$route, this.$router, {
           path: '/login'
         })
       }

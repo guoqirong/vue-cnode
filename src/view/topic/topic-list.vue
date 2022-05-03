@@ -19,6 +19,7 @@
 
 <script>
   import listItem from '../../components/listItem'
+  import { routerPush } from '@/utils'
   export default {
     data() {
       return {
@@ -63,7 +64,7 @@
         this.getData(this.tab)
       },
       seeDetail (id) {
-        this.$router.push({
+        routerPush(this.$route, this.$router, {
           path: `/index-detail`,
           query: {
             id: id,

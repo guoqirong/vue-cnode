@@ -14,7 +14,7 @@ const httpRequest = axios.create({
  */
 httpRequest.adornUrl = (actionName) => {
   // 非生产环境, 接口前缀统一使用[/proxyApi/]前缀做代理拦截!
-  return (process.env.NODE_ENV !== 'production' ? '/proxyApi' : window.SITE_CONFIG.baseUrl) + actionName
+  return (process.env.NODE_ENV !== 'production' ? window.SITE_CONFIG.baseUrl : window.SITE_CONFIG.baseUrl) + actionName
 }
 
 /**
