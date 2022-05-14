@@ -23,7 +23,7 @@
     <div class="body-content">
       <router-view/>
     </div>
-    <el-backtop :bottom="90"></el-backtop>
+    <el-backtop target="div.body-box" :bottom="90"></el-backtop>
     <div class="body-footer">
       <div class="footer-content">
         <div>CNode 社区为国内最专业的 Node.js 开源技术社区，致力于 Node.js 的技术研究。</div>
@@ -114,6 +114,8 @@
 
 <style lang="scss">
   .body-box {
+    height: 100vh;
+    overflow-y: auto;
     .navbar {
       margin-bottom: 0;
       z-index: 9;
